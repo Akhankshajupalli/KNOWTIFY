@@ -1,5 +1,5 @@
 import{ useState, useEffect } from "react";
-import "../styles/home.css";
+import "../styles/Home.css";
 
 const Home = () => {
   const [showFeatures, setShowFeatures] = useState(false);
