@@ -23,7 +23,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
+<<<<<<< HEAD
     border-bottom: 2px solid rgba(221, 15, 15, 0.2);
+=======
+    border-bottom: 2px solid rgb(255, 255, 255);
+>>>>>>> 85f8f3948489e81614597bafea2f61da7fe5f21d
   }
   
   .header-logo {
@@ -40,12 +44,20 @@
   
   .auth-buttons .sign-in-btn,
   .auth-buttons .register-btn {
+<<<<<<< HEAD
     background: rgba(255, 255, 255, 0.2);
+=======
+    background: rgba(255, 255, 255, 0.587);
+>>>>>>> 85f8f3948489e81614597bafea2f61da7fe5f21d
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     color: white;
+<<<<<<< HEAD
     text-decoration: none;
+=======
+    text-decoration: white;
+>>>>>>> 85f8f3948489e81614597bafea2f61da7fe5f21d
     transition: background 0.3s ease;
   }
   

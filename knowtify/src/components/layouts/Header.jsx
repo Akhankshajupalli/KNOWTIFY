@@ -1,7 +1,11 @@
 import  { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaBell, FaUser,  FaBook, FaChartBar, FaUsers, FaUserCheck } from "react-icons/fa"; 
+<<<<<<< HEAD
 import Button from "../layouts/Button";
+=======
+import Button from "./Button";
+>>>>>>> 85f8f3948489e81614597bafea2f61da7fe5f21d
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
