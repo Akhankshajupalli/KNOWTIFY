@@ -23,7 +23,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 2px solid rgba(221, 15, 15, 0.2);
+    border-bottom: 2px solid rgb(255, 255, 255);
   }
   
   .header-logo {
@@ -40,12 +40,12 @@
   
   .auth-buttons .sign-in-btn,
   .auth-buttons .register-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.587);
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     color: white;
-    text-decoration: none;
+    text-decoration: white;
     transition: background 0.3s ease;
   }
   
