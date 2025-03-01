@@ -1,9 +1,7 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaTimes, FaBell, FaUser,  FaBook, FaChartBar, FaUsers, FaUserCheck } from "react-icons/fa"; 
-
-import Button from "../layouts/Button";
-
+import { FaBars, FaTimes, FaBell, FaUser, FaBook, FaChartBar, FaUsers, FaUserCheck } from "react-icons/fa"; 
+import Button from "./Button";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,11 +15,16 @@ const Header = () => {
             KNOWTIFY
           </Link>
           <div className="auth-buttons">
-            <Button variant="outline" className="sign-in-btn">
-              <FaUserCheck style={{ marginRight: '5px' }} />
-              Sign In
-            </Button>
-            <Button variant="outline" className="register-btn">Register</Button>
+          <Link to="/signin" className="sign-in-btn">
+          <FaUserCheck style={{ marginRight: '5px' }} />
+          Sign In
+          </Link>
+
+            <Link to="/register">
+              <Button variant="outline" className="register-btn">
+                Register
+              </Button>
+            </Link>
           </div>
         </div>
 
