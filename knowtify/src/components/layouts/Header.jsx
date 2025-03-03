@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaBell, FaUser, FaBook, FaChartBar, FaUsers, FaUserCheck } from "react-icons/fa"; 
-import Button from "./Button";
+
+import Button from "../layouts/Button";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,14 +16,14 @@ const Header = () => {
             KNOWTIFY
           </Link>
           <div className="auth-buttons">
-          <Link to="/signin" className="sign-in-btn">
-          <FaUserCheck style={{ marginRight: '5px' }} />
-          Sign In
+          <Link to="/register">
+            <Button variant="outline" className="register-btn">Register</Button>
           </Link>
 
-            <Link to="/register">
-              <Button variant="outline" className="register-btn">
-                Register
+            <Link to="/signin">
+              <Button variant="outline" className="sign-in-btn">
+                <FaUserCheck style={{ marginRight: "5px" }} />
+                Sign In
               </Button>
             </Link>
           </div>
@@ -36,23 +37,23 @@ const Header = () => {
 
           <nav className={menuOpen ? "menu-open" : ""}>
             <Link to="/courses">
-              <FaBook style={{ marginRight: '5px' }} />
+              <FaBook style={{ marginRight: "5px" }} />
               Courses
             </Link>
             <Link to="/skill-tracks">
-              <FaChartBar style={{ marginRight: '5px' }} />
+              <FaChartBar style={{ marginRight: "5px" }} />
               Skill Tracks
             </Link>
             <Link to="/leaderboard">
-              <FaChartBar style={{ marginRight: '5px' }} />
+              <FaChartBar style={{ marginRight: "5px" }} />
               Leaderboard
             </Link>
             <Link to="/community">
-              <FaUsers style={{ marginRight: '5px' }} />
+              <FaUsers style={{ marginRight: "5px" }} />
               Community
             </Link>
             <Link to="/analytics">
-              <FaChartBar style={{ marginRight: '5px' }} />
+              <FaChartBar style={{ marginRight: "5px" }} />
               Analytics
             </Link>
           </nav>
