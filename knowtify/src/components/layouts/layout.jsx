@@ -1,9 +1,11 @@
 
-import Header from "../layouts/header";
-import Footer from "../layouts/footer";
+import Header from "./components/layouts/header";
+import Footer from "./components/layouts/footer";
 import { useLocation } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import PropTypes from "prop-types";
 
+// eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
   const location = useLocation();
 
