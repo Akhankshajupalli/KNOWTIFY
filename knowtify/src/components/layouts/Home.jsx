@@ -1,6 +1,6 @@
 import{ useState, useEffect } from "react";
 
-import "../styles/Home.css";
+import "../styles/home.css";
 
 
 const Home = () => {
