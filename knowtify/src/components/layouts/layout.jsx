@@ -1,5 +1,5 @@
 
-import Header from "./header";
+import Header from "./Header";
 import Footer from "./footer";
 import { useLocation } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
