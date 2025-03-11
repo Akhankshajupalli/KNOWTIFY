@@ -1,6 +1,6 @@
 
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "../layouts/header";
+import Footer from "../layouts/footer";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
