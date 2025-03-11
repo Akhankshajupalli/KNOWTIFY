@@ -1,29 +1,37 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "./components/styles/home.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Layout from "./components/layouts/Layout";
+import SignIn from "./components/layouts/SignIn";
+import Register from "./components/layouts/Register";
+import Dashboard from "./components/layouts/Dashboard";
+import Home from "./components/layouts/Home";
+import Profile from "./components/layouts/Profile";
+import { AuthProvider } from "./components/layouts/authcontext";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 import "./components/styles/header.css";
 import "./components/styles/footer.css";
+import "./components/styles/home.css";
+import "./components/styles/signin.css";
 import "./components/styles/register.css";
-import Header from "./components/layouts/Header";
-import Home from "./components/layouts/Home";
-import SignIn from "./components/layouts/SignIn";
-import Dashboard from "./components/layouts/Dashboard";
-import Footer from "./components/layouts/footer"; 
-import Register from "./components/layouts/Register";
+import "./components/styles/dashboard.css";
 
 const App = () => {
   return (
-    <Router>
-      <div className="app">
-        <Header />
+    <AuthProvider>
+      <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* ✅ Public Routes with Layout */}
+          <Route path="/" element={<Layout><Home /></Layout>} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/register" element={<Register />} />
+
+          {/* ✅ Protected Routes with Layout */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/profile" element={<Layout><Profile /></Layout>} />
+          </Route>
         </Routes>
-        <Footer />
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

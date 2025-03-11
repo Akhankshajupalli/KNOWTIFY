@@ -1,7 +1,7 @@
 
 import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../layouts/authcontext";
 
 const ProtectedRoute = ({ element }) => {
   const { state } = useAuth();

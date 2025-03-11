@@ -1,42 +1,130 @@
+/* Centered Full Page Container */
 .signin-container {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(5, 23, 36, 0.7);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background: rgba(5, 23, 36, 0.85); /* Dark Blue Background */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* Centered Sign-In Box */
+.signin-box {
+  background: rgba(9, 38, 59, 0.95); /* Dark Blue Tone */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.3); /* Cyan Glow */
+  text-align: center;
+  width: 400px;
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Heading */
+.signin-box h2 {
+  color: #00ffff; /* Cyan Color */
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Input Fields */
+.signin-box input[type="text"],
+.signin-box input[type="password"] {
+  width: calc(100% - 20px);
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 229, 255, 0.5); /* Cyan Border */
+  background: #051724; /* Very Dark Blue Background */
+  color: #ffffff; /* White Text */
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Input Focus Effect */
+.signin-box input:focus {
+  border: 1px solid #00ffff; /* Bright Cyan Border */
+  background: #0c2d48;
+  box-shadow: 0px 0px 8px rgba(0, 229, 255, 0.7);
+}
+
+/* Button */
+.signin-box button {
+  background: #00e5ff; /* Cyan Button */
+  color: #051724; /* Dark Blue Text */
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+}
+
+.signin-box button:hover {
+  background: #00ffff; /* Brighter Cyan on Hover */
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.7);
+}
+
+/* Error Message */
+.error-message {
+  color: #ff4d4d;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Eye Icon */
+.eye-icon {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  cursor: pointer;
+}
+
+/* Link */
+.signin-box a {
+  color: #00ffff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.signin-box a:hover {
+  text-decoration: underline;
+}
+
+/* Exit Button */
+.exit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.exit-button:hover {
+  color: #00ffff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .signin-box {
-    background: rgba(9, 38, 59, 0.9);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 229, 255, 0.3);
-    text-align: center;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .signin-box h2 {
-    color: #00ffff;
-  }
-  
-  .signin-box input {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: none;
-  }
-  
-  .signin-box button {
-    background: #00e5ff;
-    color: #051724;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .signin-box button:hover {
-    background: #00ffff;
-  }
-  
+}

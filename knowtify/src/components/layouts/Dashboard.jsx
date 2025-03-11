@@ -1,11 +1,22 @@
+
+import { useAuth } from '../layouts/authcontext';
+import { useNavigate } from 'react-router-dom';
+
 const Dashboard = () => {
-    return (
-      <div className="dashboard">
-        <h1>Welcome to Your Dashboard</h1>
-        <p>This is your personalized space.</p>
-      </div>
-    );
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); // ✅ Clear user state
+    navigate('/'); // ✅ Redirect to home page
   };
-  
-  export default Dashboard;
-  
+
+  return (
+    <div className="dashboard-container">
+      <h2>Welcome to the Dashboard, {user?.username || 'Guest'}!</h2>
+      <button onClick={handleLogout} className="logout-btn">Logout</button>
+    </div>
+  );
+};
+
+export default Dashboard;

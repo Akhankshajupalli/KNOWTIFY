@@ -5,7 +5,7 @@
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(5, 23, 36, 0.85); /* Dark Blue Background */
   position: fixed;
   top: 0;
   left: 0;
@@ -13,11 +13,11 @@
 
 /* Centered Registration Form */
 .register-form {
-  background: white;
+  background: rgba(9, 38, 59, 0.95); /* Dark Blue Tone */
   padding: 30px;
   border-radius: 12px;
   width: 400px;
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 6px 15px rgba(0, 229, 255, 0.3); /* Cyan Glow */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,7 +29,7 @@
 h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #064785;
+  color: #00ffff; /* Cyan Color */
   font-size: 22px;
   font-weight: bold;
 }
@@ -46,26 +46,33 @@ label {
   font-weight: bold;
   margin-top: 10px;
   display: block;
-  color: #333;
+  color: #ffffff; /* White Text */
 }
 
 /* Input Fields */
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="tel"],
+select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 5px;
   border-radius: 5px;
-  border: 1px solid gray;
+  border: 1px solid rgba(0, 229, 255, 0.5); /* Cyan Border */
   outline: none;
-  background: #f8f9fa;
+  background: #051724; /* Very Dark Blue Background */
+  color: #ffffff; /* White Text */
   transition: all 0.3s ease-in-out;
 }
 
 /* Input Focus Effect */
-input:focus {
-  border: 1px solid #064785;
-  background: white;
-  box-shadow: 0px 0px 5px rgba(0, 71, 133, 0.5);
+input:focus,
+select:focus {
+  border: 1px solid #00ffff; /* Bright Cyan Border */
+  background: #0c2d48;
+  box-shadow: 0px 0px 8px rgba(0, 229, 255, 0.7);
 }
 
 /* Checkbox Group */
@@ -80,6 +87,7 @@ input:focus {
   align-items: center;
   gap: 10px;
   font-size: 16px;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -101,23 +109,53 @@ button {
   padding: 12px 18px;
   border: none;
   border-radius: 5px;
-  background-color: #064785;
-  color: white;
+  background-color: #00e5ff; /* Cyan Button */
+  color: #051724; /* Dark Blue Text */
   cursor: pointer;
   transition: 0.3s;
   font-size: 16px;
 }
 
 button:hover {
-  background-color: #03254c;
+  background-color: #00ffff; /* Brighter Cyan on Hover */
+  box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.7);
 }
 
 /* Back Button */
 .back-button {
-  background-color: #ccc;
-  color: black;
+  background-color: #999;
+  color: #051724;
 }
 
 .back-button:hover {
-  background-color: #999;
+  background-color: #666;
+}
+
+/* Exit Button */
+.exit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.exit-button:hover {
+  color: #00ffff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
