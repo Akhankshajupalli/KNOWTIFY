@@ -1,5 +1,5 @@
 
-import '../styles/Footer.css'; // Import the CSS file
+import '../styles/footer.css'; // Import the CSS file
 
 const Footer = () => {
   const year = new Date().getFullYear();
