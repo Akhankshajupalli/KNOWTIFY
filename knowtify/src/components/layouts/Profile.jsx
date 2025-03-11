@@ -1,10 +1,10 @@
-import { useState } from "react";
+import  { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
-import { useAuth } from "../AuthContext";
-import ProfileEditModal from "./ProfileEditModal";
+import { useAuth } from "../layouts/authcontext";
+import ProfileEditModal from "../layouts/ProfileEditModal";
 
 Modal.setAppElement("#root");
 
@@ -49,11 +49,12 @@ const DeleteButton = styled.button`
 `;
 
 const Profile = () => {
-  const { state } = useAuth();
+  const { state, logout } = useAuth();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [editSection, setEditSection] = useState(null);
   const [formData, setFormData] = useState(state.user || {});
   const [tempData, setTempData] = useState({});
+  const [error, setError] = useState("");
 
   const openModal = (section) => {
     setEditSection(section);
@@ -65,44 +66,62 @@ const Profile = () => {
     setModalIsOpen(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleChange = (e) => {
     setTempData({ ...tempData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     const updatedData = { ...formData, [editSection]: tempData };
-    setFormData(updatedData);
-    closeModal();
 
     try {
-      await axios.put(
-        `http://localhost:5000/users/${formData.id}`,
+      // ✅ Step 1: Update user data using Axios
+      const response = await axios.put(
+        `https://knowtify-server-2.onrender.com/users/${formData.id}`,
         updatedData,
         {
           headers: { "Content-Type": "application/json" },
         }
       );
+
+      // ✅ Step 2: Update state on success
+      setFormData(response.data);
+      closeModal();
+      alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating user data:", error);
+      setError("Failed to update profile. Please try again.");
     }
   };
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/users/${formData.id}`);
-      alert("Account deleted successfully.");
+      if (window.confirm("Are you sure you want to delete your account?")) {
+        // ✅ Step 1: Delete user account using Axios
+        await axios.delete(`https://knowtify-server-2.onrender.com/users/${formData.id}`);
+
+        alert("Account deleted successfully.");
+        logout(); // ✅ Clear auth state after deletion
+      }
     } catch (error) {
       console.error("Error deleting user account:", error);
+      setError("Failed to delete account. Please try again.");
     }
   };
 
   return (
     <Container>
       <h2>Profile</h2>
+      
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* ✅ Personal Info */}
       <Section>
         <Title>
-          Personal Info{" "}
+          Personal Info
           <Button onClick={() => openModal("personal")}>
             <FaEdit />
           </Button>
@@ -114,9 +133,10 @@ const Profile = () => {
         <p>Gender: {formData.personal?.gender || "N/A"}</p>
       </Section>
 
+      {/* ✅ Permanent Address */}
       <Section>
         <Title>
-          Address (Permanent){" "}
+          Address (Permanent)
           <Button onClick={() => openModal("permanent")}>
             <FaEdit />
           </Button>
@@ -130,9 +150,10 @@ const Profile = () => {
         </p>
       </Section>
 
+      {/* ✅ Current Address */}
       <Section>
         <Title>
-          Address (Current){" "}
+          Address (Current)
           <Button onClick={() => openModal("current")}>
             <FaEdit />
           </Button>
@@ -146,9 +167,10 @@ const Profile = () => {
         </p>
       </Section>
 
+      {/* ✅ Languages */}
       <Section>
         <Title>
-          Languages{" "}
+          Languages
           <Button onClick={() => openModal("languages")}>
             <FaEdit />
           </Button>
@@ -165,11 +187,12 @@ const Profile = () => {
         )}
       </Section>
 
+      {/* ✅ Delete Account */}
       <DeleteButton onClick={handleDelete}>
         <FaTrash /> Delete Account
       </DeleteButton>
 
-      {/* Profile Edit Modal */}
+      {/* ✅ Profile Edit Modal */}
       <ProfileEditModal
         isOpen={modalIsOpen}
         setModalIsOpen={setModalIsOpen}

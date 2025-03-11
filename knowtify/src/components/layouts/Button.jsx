@@ -1,16 +1,15 @@
-
 import PropTypes from 'prop-types';
 
-const Button = ({ label, onClick }) => {
+const Button = ({ children, onClick }) => {
   return (
     <button className="custom-button" onClick={onClick}>
-      {label}
+      {children} {/* ✅ This will now display the text between the tags */}
     </button>
   );
 };
 
 Button.propTypes = {
-  label: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired, // ✅ Use children instead of label
   onClick: PropTypes.func.isRequired,
 };
 

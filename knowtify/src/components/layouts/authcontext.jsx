@@ -1,21 +1,49 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
 import authReducer from "../reducers/authReducer";
 
+// ✅ Load Initial State from Local Storage
+const initialState = JSON.parse(localStorage.getItem("authState")) || {
+  isAuthenticated: false,
+  user: null,
+};
+
+// ✅ Create Context
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const initialState = { isAuthenticated: false, user: null };
-
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Authentication actions
-  const login = (user) => dispatch({ type: "LOGIN", payload: user });
-  const logout = () => dispatch({ type: "LOGOUT" });
+  // ✅ Save to Local Storage on State Change
+  useEffect(() => {
+    localStorage.setItem("authState", JSON.stringify(state));
+  }, [state]);
 
-  // Update profile action
+  // ✅ Login Action
+  const login = (user) => {
+    dispatch({ type: "LOGIN", payload: user });
+    localStorage.setItem(
+      "authState",
+      JSON.stringify({ isAuthenticated: true, user })
+    );
+  };
+
+  // ✅ Logout Action
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("authState");
+  };
+
+  // ✅ Update Profile Action
   const updateProfile = (updatedData) => {
     dispatch({ type: "UPDATE_PROFILE", payload: updatedData });
+    localStorage.setItem(
+      "authState",
+      JSON.stringify({
+        isAuthenticated: state.isAuthenticated,
+        user: updatedData,
+      })
+    );
   };
 
   return (
@@ -25,12 +53,12 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ✅ Add PropTypes validation
+// ✅ PropTypes Validation
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// Custom hook for consuming AuthContext
+// ✅ Custom Hook to Use Context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
