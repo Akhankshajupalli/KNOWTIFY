@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaBell, FaUser, FaBook, FaChartBar, FaUsers, FaUserCheck } from "react-icons/fa";
-import { useAuth } from "../layouts/authcontext"; // ✅ Ensure correct path
+import { useAuth } from "../layouts/authcontext";
 import Button from "../layouts/Button";
-import "../styles/header.css"; // ✅ Ensure correct path
+import "../styles/header.css";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { state, logout } = useAuth(); // ✅ Access authentication state and actions
   const navigate = useNavigate();
 
+  console.log("AUTH STATE:", state); // ✅ Debugging to confirm state update
+
+  // ✅ Handle Logout Action
   const handleLogout = () => {
-    logout(); // ✅ Clear authentication state
+    logout();
     navigate("/"); // ✅ Redirect to home after logout
   };
 
@@ -27,23 +30,39 @@ const Header = () => {
           <div className="auth-buttons">
             {state.isAuthenticated ? (
               <>
+                {/* ✅ Dashboard Button */}
                 <Link to="/dashboard">
                   <Button variant="outline" className="dashboard-btn">
                     Dashboard
                   </Button>
                 </Link>
-                <Button variant="outline" className="logout-btn" onClick={handleLogout}>
+
+                {/* ✅ Profile Button */}
+                <Link to="/profile">
+                  <Button variant="outline" className="profile-btn">
+                    Profile
+                  </Button>
+                </Link>
+
+                {/* ✅ Logout Button */}
+                <Button
+                  variant="outline"
+                  className="logout-btn"
+                  onClick={handleLogout}
+                >
                   Logout
                 </Button>
               </>
             ) : (
               <>
+                {/* ✅ Register Button */}
                 <Link to="/register">
                   <Button variant="outline" className="register-btn">
                     Register
                   </Button>
                 </Link>
 
+                {/* ✅ Sign In Button */}
                 <Link to="/signin">
                   <Button variant="outline" className="sign-in-btn">
                     <FaUserCheck style={{ marginRight: "5px" }} />

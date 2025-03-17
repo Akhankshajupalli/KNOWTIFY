@@ -1,49 +1,66 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import authReducer from "../reducers/authReducer";
 
-// ✅ Load Initial State from Local Storage
+const AuthContext = createContext();
+
 const initialState = JSON.parse(localStorage.getItem("authState")) || {
   isAuthenticated: false,
   user: null,
 };
 
-// ✅ Create Context
-const AuthContext = createContext();
-
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // ✅ Save to Local Storage on State Change
   useEffect(() => {
     localStorage.setItem("authState", JSON.stringify(state));
   }, [state]);
 
-  // ✅ Login Action
-  const login = (user) => {
-    dispatch({ type: "LOGIN", payload: user });
-    localStorage.setItem(
-      "authState",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
+  const login = async (username, password) => {
+    try {
+      const response = await axios.get(
+        `https://knowtify-server-2.onrender.com/users?username=${username}`
+      );
+      const user = response.data[0];
+
+      if (user && user.password === password) {
+        dispatch({ type: "LOGIN", payload: user });
+        localStorage.setItem(
+          "authState",
+          JSON.stringify({ isAuthenticated: true, user })
+        );
+        console.log("Login Successful:", user);
+        return true;
+      } else {
+        throw new Error("Invalid username or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   };
 
-  // ✅ Logout Action
   const logout = () => {
     dispatch({ type: "LOGOUT" });
     localStorage.removeItem("authState");
   };
 
-  // ✅ Update Profile Action
-  const updateProfile = (updatedData) => {
-    dispatch({ type: "UPDATE_PROFILE", payload: updatedData });
-    localStorage.setItem(
-      "authState",
-      JSON.stringify({
-        isAuthenticated: state.isAuthenticated,
-        user: updatedData,
-      })
-    );
+  const updateProfile = async (updatedData) => {
+    try {
+      const response = await axios.put(
+        `https://knowtify-server-2.onrender.com/users/${updatedData.id}`,
+        updatedData
+      );
+      dispatch({ type: "UPDATE_PROFILE", payload: response.data });
+      localStorage.setItem(
+        "authState",
+        JSON.stringify({ isAuthenticated: true, user: response.data })
+      );
+    } catch (error) {
+      console.error("Update profile error:", error);
+      throw error;
+    }
   };
 
   return (
@@ -53,12 +70,10 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ✅ PropTypes Validation
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// ✅ Custom Hook to Use Context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
