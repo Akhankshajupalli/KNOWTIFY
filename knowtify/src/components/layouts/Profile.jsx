@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -49,13 +49,14 @@ const DeleteButton = styled.button`
 `;
 
 const Profile = () => {
-  const { state, logout } = useAuth();
+  const { state, logout, dispatch } = useAuth(); // ✅ Use dispatch to update state
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [editSection, setEditSection] = useState(null);
-  const [formData, setFormData] = useState(state.user || {});
+  const [formData, setFormData] = useState(state?.user || {});
   const [tempData, setTempData] = useState({});
   const [error, setError] = useState("");
 
+  // ✅ Open Modal and Load Data
   const openModal = (section) => {
     setEditSection(section);
     setTempData(formData[section] || {});
@@ -66,19 +67,25 @@ const Profile = () => {
     setModalIsOpen(false);
   };
 
-  // eslint-disable-next-line no-unused-vars
+  // ✅ Handle Form Input Change
   const handleChange = (e) => {
-    setTempData({ ...tempData, [e.target.name]: e.target.value });
+    setTempData({
+      ...tempData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // ✅ Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    const updatedData = { ...formData, [editSection]: tempData };
+    const updatedData = {
+      ...formData,
+      [editSection]: tempData,
+    };
 
     try {
-      // ✅ Step 1: Update user data using Axios
       const response = await axios.put(
         `https://knowtify-server-2.onrender.com/users/${formData.id}`,
         updatedData,
@@ -87,8 +94,12 @@ const Profile = () => {
         }
       );
 
-      // ✅ Step 2: Update state on success
+      // ✅ Update local state
       setFormData(response.data);
+
+      // ✅ Update global state in context
+      dispatch({ type: "UPDATE_PROFILE", payload: response.data });
+
       closeModal();
       alert("Profile updated successfully!");
     } catch (error) {
@@ -97,18 +108,22 @@ const Profile = () => {
     }
   };
 
+  // ✅ Handle Account Deletion
   const handleDelete = async () => {
-    try {
-      if (window.confirm("Are you sure you want to delete your account?")) {
-        // ✅ Step 1: Delete user account using Axios
-        await axios.delete(`https://knowtify-server-2.onrender.com/users/${formData.id}`);
+    if (window.confirm("Are you sure you want to delete your account?")) {
+      try {
+        await axios.delete(
+          `https://knowtify-server-2.onrender.com/users/${formData.id}`
+        );
+
+        // ✅ Clear user state after deletion
+        logout();
 
         alert("Account deleted successfully.");
-        logout(); // ✅ Clear auth state after deletion
+      } catch (error) {
+        console.error("Error deleting user account:", error);
+        setError("Failed to delete account. Please try again.");
       }
-    } catch (error) {
-      console.error("Error deleting user account:", error);
-      setError("Failed to delete account. Please try again.");
     }
   };
 
@@ -126,44 +141,44 @@ const Profile = () => {
             <FaEdit />
           </Button>
         </Title>
-        <p>Name: {formData.personal?.name || "N/A"}</p>
-        <p>Email: {formData.personal?.email || "N/A"}</p>
-        <p>Phone: {formData.personal?.phone || "N/A"}</p>
-        <p>DOB: {formData.personal?.dob || "N/A"}</p>
-        <p>Gender: {formData.personal?.gender || "N/A"}</p>
+        <p>Name: {formData?.personal?.name || "N/A"}</p>
+        <p>Email: {formData?.personal?.email || "N/A"}</p>
+        <p>Phone: {formData?.personal?.phone || "N/A"}</p>
+        <p>DOB: {formData?.personal?.dob || "N/A"}</p>
+        <p>Gender: {formData?.personal?.gender || "N/A"}</p>
       </Section>
 
       {/* ✅ Permanent Address */}
       <Section>
         <Title>
-          Address (Permanent)
+          Permanent Address
           <Button onClick={() => openModal("permanent")}>
             <FaEdit />
           </Button>
         </Title>
         <p>
-          {formData.permanent?.street || "N/A"},{" "}
-          {formData.permanent?.city || "N/A"},{" "}
-          {formData.permanent?.state || "N/A"},{" "}
-          {formData.permanent?.country || "N/A"} -{" "}
-          {formData.permanent?.pin || "N/A"}
+          {formData?.permanent?.street || "N/A"},{" "}
+          {formData?.permanent?.city || "N/A"},{" "}
+          {formData?.permanent?.state || "N/A"},{" "}
+          {formData?.permanent?.country || "N/A"} -{" "}
+          {formData?.permanent?.pin || "N/A"}
         </p>
       </Section>
 
       {/* ✅ Current Address */}
       <Section>
         <Title>
-          Address (Current)
+          Current Address
           <Button onClick={() => openModal("current")}>
             <FaEdit />
           </Button>
         </Title>
         <p>
-          {formData.current?.street || "N/A"},{" "}
-          {formData.current?.city || "N/A"},{" "}
-          {formData.current?.state || "N/A"},{" "}
-          {formData.current?.country || "N/A"} -{" "}
-          {formData.current?.pin || "N/A"}
+          {formData?.current?.street || "N/A"},{" "}
+          {formData?.current?.city || "N/A"},{" "}
+          {formData?.current?.state || "N/A"},{" "}
+          {formData?.current?.country || "N/A"} -{" "}
+          {formData?.current?.pin || "N/A"}
         </p>
       </Section>
 
@@ -175,7 +190,7 @@ const Profile = () => {
             <FaEdit />
           </Button>
         </Title>
-        {formData.languages?.length > 0 ? (
+        {formData?.languages?.length > 0 ? (
           formData.languages.map((lang, index) => (
             <p key={index}>
               {lang.name} (Read: {lang.read ? "Yes" : "No"}, Write:{" "}
@@ -195,12 +210,12 @@ const Profile = () => {
       {/* ✅ Profile Edit Modal */}
       <ProfileEditModal
         isOpen={modalIsOpen}
-        setModalIsOpen={setModalIsOpen}
         closeModal={closeModal}
         section={editSection}
         tempData={tempData}
         setTempData={setTempData}
         handleSubmit={handleSubmit}
+        handleChange={handleChange}
       />
     </Container>
   );

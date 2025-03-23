@@ -1,21 +1,30 @@
 
-import { useAuth } from '../layouts/authcontext';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../layouts/authcontext";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9;
+`;
+
+const Message = styled.h1`
+  font-size: 28px;
+  color: #333;
+`;
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout(); // ✅ Clear user state
-    navigate('/'); // ✅ Redirect to home page
-  };
+  const { state } = useAuth();
 
   return (
-    <div className="dashboard-container">
-      <h2>Welcome to the Dashboard, {user?.username || 'Guest'}!</h2>
-      <button onClick={handleLogout} className="logout-btn">Logout</button>
-    </div>
+    <Container>
+      {/* ✅ Show welcome message with username */}
+      <Message>
+        Welcome to your KnowTify dashboard, {state?.user?.username || "User"}!
+      </Message>
+    </Container>
   );
 };
 

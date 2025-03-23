@@ -1,70 +1,65 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
-import PropTypes from "prop-types";
-import authReducer from "../reducers/authReducer";
+import { createContext, useContext, useReducer } from "react";
+import axios from "axios";
 
-// ✅ Load Initial State from Local Storage
-const initialState = JSON.parse(localStorage.getItem("authState")) || {
+// ✅ Initial State
+const initialState = {
   isAuthenticated: false,
   user: null,
 };
 
-// ✅ Create Context
+// ✅ Reducer
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      return { isAuthenticated: true, user: action.payload };
+    case "LOGOUT":
+      return { isAuthenticated: false, user: null };
+    default:
+      return state;
+  }
+};
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // ✅ Save to Local Storage on State Change
-  useEffect(() => {
-    localStorage.setItem("authState", JSON.stringify(state));
-  }, [state]);
-
-  // ✅ Login Action
-  const login = (user) => {
-    dispatch({ type: "LOGIN", payload: user });
-    localStorage.setItem(
-      "authState",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
+  // ✅ Login Function using Axios
+  const login = async (username, password) => {
+    try {
+      const response = await axios.get(
+        `https://knowtify-server-2.onrender.com/users?username=${username}&password=${password}`
+      );
+  
+      if (response.data.length > 0) {
+        const user = response.data[0];
+        dispatch({ type: "LOGIN", payload: user });
+  
+        // ✅ Store user data in local storage for persistence
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log("Auth State After Login:", user); // ✅ Debug log
+        return true;
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   };
+  
 
-  // ✅ Logout Action
+  // ✅ Logout Function
   const logout = () => {
     dispatch({ type: "LOGOUT" });
-    localStorage.removeItem("authState");
-  };
-
-  // ✅ Update Profile Action
-  const updateProfile = (updatedData) => {
-    dispatch({ type: "UPDATE_PROFILE", payload: updatedData });
-    localStorage.setItem(
-      "authState",
-      JSON.stringify({
-        isAuthenticated: state.isAuthenticated,
-        user: updatedData,
-      })
-    );
   };
 
   return (
-    <AuthContext.Provider value={{ state, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ state, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// ✅ PropTypes Validation
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-// ✅ Custom Hook to Use Context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-
-export default AuthContext;
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = () => useContext(AuthContext);

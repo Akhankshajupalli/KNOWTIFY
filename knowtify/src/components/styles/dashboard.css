@@ -1,0 +1,28 @@
+.dashboard-container {
+    position: relative;
+    z-index: 2; /* ✅ Ensure it's above the background */
+    color: #ffffff; /* ✅ White text for better contrast */
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .dashboard-container h2,
+  .dashboard-container p {
+    margin-bottom: 12px;
+  }
+  
+  .logout-btn {
+    background-color: lightskyblue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background-color: lightskyblue;
+  }
+  
