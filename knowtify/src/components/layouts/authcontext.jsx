@@ -1,85 +1,65 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
-import PropTypes from "prop-types";
+import { createContext, useContext, useReducer } from "react";
 import axios from "axios";
-import authReducer from "../reducers/authReducer";
 
-const AuthContext = createContext();
-
-const initialState = JSON.parse(localStorage.getItem("authState")) || {
+// ✅ Initial State
+const initialState = {
   isAuthenticated: false,
   user: null,
 };
 
+// ✅ Reducer
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      return { isAuthenticated: true, user: action.payload };
+    case "LOGOUT":
+      return { isAuthenticated: false, user: null };
+    default:
+      return state;
+  }
+};
+
+const AuthContext = createContext();
+
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  useEffect(() => {
-    localStorage.setItem("authState", JSON.stringify(state));
-  }, [state]);
-
+  // ✅ Login Function using Axios
   const login = async (username, password) => {
     try {
       const response = await axios.get(
-        `https://knowtify-server-2.onrender.com/users?username=${username}`
+        `https://knowtify-server-2.onrender.com/users?username=${username}&password=${password}`
       );
-      const user = response.data[0];
-
-      if (user && user.password === password) {
+  
+      if (response.data.length > 0) {
+        const user = response.data[0];
         dispatch({ type: "LOGIN", payload: user });
-        localStorage.setItem(
-          "authState",
-          JSON.stringify({ isAuthenticated: true, user })
-        );
-        console.log("Login Successful:", user);
+  
+        // ✅ Store user data in local storage for persistence
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log("Auth State After Login:", user); // ✅ Debug log
         return true;
       } else {
-        throw new Error("Invalid username or password");
+        throw new Error("Invalid credentials");
       }
     } catch (error) {
       console.error("Login error:", error);
       throw error;
     }
   };
+  
 
+  // ✅ Logout Function
   const logout = () => {
     dispatch({ type: "LOGOUT" });
-    localStorage.removeItem("authState");
-  };
-
-  const updateProfile = async (updatedData) => {
-    try {
-      const response = await axios.put(
-        `https://knowtify-server-2.onrender.com/users/${updatedData.id}`,
-        updatedData
-      );
-      dispatch({ type: "UPDATE_PROFILE", payload: response.data });
-      localStorage.setItem(
-        "authState",
-        JSON.stringify({ isAuthenticated: true, user: response.data })
-      );
-    } catch (error) {
-      console.error("Update profile error:", error);
-      throw error;
-    }
   };
 
   return (
-    <AuthContext.Provider value={{ state, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ state, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-
-export default AuthContext;
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = () => useContext(AuthContext);

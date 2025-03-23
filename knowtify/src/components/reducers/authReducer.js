@@ -6,20 +6,17 @@ const authReducer = (state, action) => {
         isAuthenticated: true,
         user: action.payload,
       };
-
     case "LOGOUT":
       return {
         ...state,
         isAuthenticated: false,
         user: null,
       };
-
     case "UPDATE_PROFILE":
       return {
         ...state,
         user: action.payload,
       };
-
     default:
       return state;
   }

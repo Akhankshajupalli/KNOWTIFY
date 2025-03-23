@@ -42,8 +42,11 @@ const Register = () => {
     e.preventDefault();
     try {
       // ✅ Send POST request to backend using Axios
-      const response = await axios.post("https://knowtify-server-2.onrender.com/users", formData);
-
+      const response = await axios.post(
+        "https://knowtify-server-2.onrender.com/users", // ✅ Ensure the endpoint is correct
+        formData,
+        { headers: { "Content-Type": "application/json" } }
+      );
       console.log("Registration Successful:", response.data);
       alert("Registration Successful!");
       navigate("/signin");
@@ -54,7 +57,7 @@ const Register = () => {
   };
 
   const handleExit = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   return (
@@ -229,8 +232,11 @@ const Register = () => {
                     value={interest}
                     checked={formData.interests.includes(interest)}
                     onChange={handleCheckboxChange}
+                    
                   />
+                
                   {interest}
+                  
                 </label>
               ))}
             </div>
