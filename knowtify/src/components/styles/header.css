@@ -25,6 +25,7 @@
     padding: 10px 0;
 
     border-bottom: 2px solid rgb(255, 255, 255);
+
   }
   
   .header-logo {
@@ -41,20 +42,18 @@
   
   .auth-buttons .sign-in-btn,
   .auth-buttons .register-btn {
-
-    background: rgba(255, 255, 255, 0.587);
-
+    background: rgba(255, 255, 255, 0.2);
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     color: white;
-    text-decoration: white;
+    text-decoration: none;
     transition: background 0.3s ease;
   }
   
   .auth-buttons .sign-in-btn:hover,
   .auth-buttons .register-btn:hover {
-    background: rgba(107, 34, 196, 0.4);
+    background: rgba(255, 255, 255, 0.4);
   }
   
   /* Bottom Section */
