@@ -43,7 +43,7 @@ const Register = () => {
     try {
       // ✅ Send POST request to backend using Axios
       const response = await axios.post(
-        "https://knowtify-server-2.onrender.com/users", // ✅ Ensure the endpoint is correct
+        "http://localhost:8080/api/users/register", // ✅ Ensure the endpoint is correct
         formData,
         { headers: { "Content-Type": "application/json" } }
       );

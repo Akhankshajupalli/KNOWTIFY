@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useAuth } from "./authcontext";
+import axios from "axios";
+import { useAuth } from "../layouts/authcontext";
 import { useNavigate } from "react-router-dom";
-import "../styles/signin.css";
+import "../styles/signin.css"; // ✅ Import your existing CSS file
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ Correct import
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -23,14 +24,20 @@ const SignIn = () => {
     setError("");
 
     try {
-      // ✅ Call login function from context
-      const isSuccess = await login(formData.username, formData.password);
+      const response = await axios.post(
+        "http://localhost:8080/api/users/login", // ✅ Adjusted endpoint for Spring Boot API
+        formData,
+        { withCredentials: true } // ✅ Send cookies with request
+      );
 
-      if (isSuccess) {
-        navigate("/"); // ✅ Redirect to dashboard
-      }
+      login(response.data.username); // ✅ Store user state
+      navigate("/dashboard"); // ✅ Redirect to dashboard
     } catch (error) {
-      setError("Invalid username or password");
+      if (error.response) {
+        setError(error.response.data.message || "Invalid credentials");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -53,7 +60,7 @@ const SignIn = () => {
         {/* ✅ Password Input with Eye Icon */}
         <div className="form-group">
           <label>Password:</label>
-          <div style={{ position: "relative" }}>
+          <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -62,26 +69,17 @@ const SignIn = () => {
               placeholder="Enter your password"
               required
             />
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-              }}
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
+            <span className="toggle-icon" onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </span>
           </div>
         </div>
 
         {/* ✅ Error Message */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="error">{error}</p>}
 
         {/* ✅ Submit Button */}
-        <button type="submit">Login</button>
+        <button type="submit" className="submit-btn">Login</button>
       </form>
     </div>
   );
