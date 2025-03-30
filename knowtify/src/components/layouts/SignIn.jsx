@@ -31,7 +31,7 @@ const SignIn = () => {
       );
 
       login(response.data.username); // ✅ Store user state
-      navigate("/dashboard"); // ✅ Redirect to dashboard
+      navigate("/"); // ✅ Redirect to dashboard
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message || "Invalid credentials");

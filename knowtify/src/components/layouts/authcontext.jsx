@@ -1,61 +1,68 @@
-import { createContext, useContext, useReducer } from "react";
+import  {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+} from "react";
+import authReducer from "../reducers/authReducer";
 import axios from "axios";
 
-// ✅ Initial State
-const initialState = {
-  isAuthenticated: false,
-  user: null,
-};
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext();
 
-// ✅ Reducer
-const authReducer = (state, action) => {
-  switch (action.type) {
-    case "LOGIN":
-      return { isAuthenticated: true, user: action.payload };
-    case "LOGOUT":
-      return { isAuthenticated: false, user: null };
-    default:
-      return state;
-  }
-};
-
-const AuthContext = createContext();
-
+// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
+  const initialState = { isAuthenticated: false, user: null };
+
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Login Function using Axios
-  const login = async (username, password) => {
-    try {
-      const response = await axios.get(
-        `https://knowtify-server-2.onrender.com/users?username=${username}&password=${password}`
-      );
-  
-      if (response.data.length > 0) {
-        const user = response.data[0];
-        dispatch({ type: "LOGIN", payload: user });
-  
-        // ✅ Store user data in local storage for persistence
-        localStorage.setItem("user", JSON.stringify(user));
-        console.log("Auth State After Login:", user); // ✅ Debug log
-        return true;
-      } else {
-        throw new Error("Invalid credentials");
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/users/check-auth",
+          {
+            withCredentials: true, // Include cookies in request
+          }
+        );
+
+        console.log("auth context");
+
+        if (response.data.user) {
+          dispatch({ type: "LOGIN", payload: response.data.username });
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+      } finally {
+        setLoading(false); // Update loading state after fetching
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
-    }
-  };
-  
+    };
 
-  // ✅ Logout Function
-  const logout = () => {
+    checkAuth();
+  }, []); // Run only once when component mounts
+
+  const login = (username) => {
+    dispatch({ type: "LOGIN", payload: username });
+  };
+
+  const updateProfile = (updates) => {
+    dispatch({ type: "UPDATE", payload: updates });
+  };
+
+  const logout = async () => {
+    await fetch("http://localhost:8080/api/users/logout", {
+      method: "POST",
+      credentials: "include",
+    });
     dispatch({ type: "LOGOUT" });
   };
 
   return (
-    <AuthContext.Provider value={{ state, login, logout }}>
+    <AuthContext.Provider
+      value={{ state, login, logout, updateProfile, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../layouts/authcontext";
-import { useNavigate } from "react-router-dom";
+import "../styles/profile.css";
 
 const Profile = () => {
   const { state, logout } = useAuth();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
-  const username = state.user?.username; // Get logged-in username
+
+  const username = state.user?.username;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // ✅ Fetch user details from your backend
         const response = await axios.get(
-          `http://localhost:8080/api/users/${username}`,
-          { headers: { "Content-Type": "application/json" } }
+          `http://localhost:8080/api/users/check-auth`,
+          { withCredentials: true }
         );
-        setUserData(response.data);
+        setUserData(response.data.user);
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile. Please try again.");
@@ -44,16 +44,18 @@ const Profile = () => {
     <div className="profile-container">
       <h2>User Profile</h2>
       <p><strong>Username:</strong> {userData.username}</p>
-      <p><strong>First Name:</strong> {userData.firstName}</p>
-      <p><strong>Last Name:</strong> {userData.lastName}</p>
-      <p><strong>Date of Birth:</strong> {userData.dob}</p>
-      <p><strong>Email:</strong> {userData.email}</p>
-      <p><strong>Phone:</strong> {userData.phone}</p>
-      <p><strong>Country:</strong> {userData.country}</p>
-      <p><strong>Address:</strong> {userData.address}, {userData.city}, {userData.state} - {userData.zip}</p>
-      <p><strong>Interests:</strong> {userData.interests?.join(", ")}</p>
+      
+      <p><strong>Date of Birth:</strong> {userData.dob || "Not provided"}</p>
+<p><strong>Phone:</strong> {userData.phone || "Not provided"}</p>
 
-      <button className="edit-btn" onClick={() => navigate("/edit-profile")}>Edit Profile</button>
+      <p><strong>Email:</strong> {userData.email}</p>
+      
+      
+
+      <button className="edit-btn" onClick={() => navigate("/edit-profile")}>
+        Edit Profile
+      </button>
+
       <button className="logout-btn" onClick={logout}>Logout</button>
     </div>
   );

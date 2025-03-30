@@ -20,11 +20,11 @@ const Dashboard = () => {
 
         // ✅ Fetch user details from Spring Boot server
         const response = await axios.get(
-          `http://localhost:8080/api/users/${state.user.id}`, // ✅ Replace with your Spring Boot backend URL
+          `http://localhost:8080/api/users/check-auth`, // ✅ Replace with your Spring Boot backend URL
           { withCredentials: true } // ✅ Include credentials for authentication
         );
 
-        setUserDetails(response.data);
+        setUserDetails(response.data.user);
       } catch (error) {
         console.error("Error fetching user details:", error);
         setError("Failed to load user data. Please log in again.");
@@ -48,7 +48,7 @@ const Dashboard = () => {
       <p className="dashboard-subtitle">Explore the features available for you:</p>
       <ul className="dashboard-features">
         <li className="feature-card">Edit Profile</li>
-        <li className="feature-card">Manage Account</li>
+        
         <li className="feature-card">View Activity</li>
         <li className="feature-card">Change Password</li>
       </ul>
@@ -57,3 +57,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

@@ -1,14 +1,19 @@
-
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "react-modal";
+import axios from "axios";
 import styled from "styled-components";
-import { FaTrash } from "react-icons/fa";
 
 Modal.setAppElement("#root");
 
 // ✅ Styled Components
 const ModalContainer = styled.div`
   padding: 20px;
+  width: 400px;
+  background: rgba(5, 23, 36, 0.9);
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 `;
 
 const Input = styled.input`
@@ -20,21 +25,9 @@ const Input = styled.input`
   font-size: 1rem;
 `;
 
-const CheckboxContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  margin: 5px 0;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-`;
-
 const Button = styled.button`
   background: ${(props) => (props.primary ? "#007bff" : "#6c757d")};
-  color: white;
+  color: rgba(5, 23, 36, 0.9);
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -46,128 +39,81 @@ const Button = styled.button`
   }
 `;
 
-const DeleteButton = styled.button`
-  background: red;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  &:hover {
-    background: darkred;
-  }
-`;
+const ProfileEditModal = ({ isOpen, closeModal, userData, setUserData }) => {
+  const [formData, setFormData] = useState(userData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-const LanguageContainer = styled.div`
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  background: #f9f9f9;
-  position: relative;
-`;
-
-const ProfileEditModal = ({
-  isOpen,
-  closeModal,
-  section,
-  tempData,
-  setTempData,
-  handleSubmit,
-}) => {
-  // ✅ Add New Language
-  const addLanguage = () => {
-    setTempData([
-      ...tempData,
-      { name: "", read: false, write: false, speak: false },
-    ]);
+  // ✅ Handle Input Changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Remove Language
-  const removeLanguage = (index) => {
-    setTempData(tempData.filter((_, i) => i !== index));
-  };
+  // ✅ Handle Form Submission (Save Changes)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-  // ✅ Handle Input/Checkbox Changes
-  const handleChange = (index, field, value) => {
-    const updatedLanguages = [...tempData];
-    updatedLanguages[index][field] = value;
-    setTempData(updatedLanguages);
-  };
+    try {
+      // ✅ Send update request to backend
+      const response = await axios.put(
+        `http://localhost:8080/api/users/update`,
+        formData,
+        { withCredentials: true }
+      );
 
-  // ✅ Handle General Input Changes
-  const handleGeneralChange = (key, value) => {
-    setTempData({ ...tempData, [key]: value });
+      // ✅ Update Profile Data & Close Modal
+      setUserData(response.data.user);
+      closeModal();
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      setError("Failed to update profile. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={closeModal}
-      contentLabel={`Edit ${section}`}
-    >
+    <Modal isOpen={isOpen} onRequestClose={closeModal} contentLabel="Edit Profile">
       <ModalContainer>
-        <h2>Edit {section}</h2>
+        <h2>Edit Profile</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
-          {section === "languages" ? (
-            <>
-              {tempData.map((lang, index) => (
-                <LanguageContainer key={index}>
-                  <Input
-                    type="text"
-                    placeholder="Language"
-                    value={lang.name}
-                    onChange={(e) =>
-                      handleChange(index, "name", e.target.value)
-                    }
-                  />
-                  <CheckboxContainer>
-                    {[
-                      { label: "Read", key: "read" },
-                      { label: "Write", key: "write" },
-                      { label: "Speak", key: "speak" },
-                    ].map(({ label, key }) => (
-                      <CheckboxLabel key={key}>
-                        <input
-                          type="checkbox"
-                          checked={lang[key]}
-                          onChange={(e) =>
-                            handleChange(index, key, e.target.checked)
-                          }
-                        />
-                        {label}
-                      </CheckboxLabel>
-                    ))}
-                  </CheckboxContainer>
-                  <DeleteButton onClick={() => removeLanguage(index)}>
-                    <FaTrash /> Remove
-                  </DeleteButton>
-                </LanguageContainer>
-              ))}
-              <Button type="button" onClick={addLanguage}>
-                Add Language
-              </Button>
-            </>
-          ) : (
-            Object.keys(tempData).map((key) => (
-              <div key={key}>
-                <label>{key}:</label>
-                <Input
-                  type="text"
-                  name={key}
-                  value={tempData[key] || ""}
-                  onChange={(e) => handleGeneralChange(key, e.target.value)}
-                />
-              </div>
-            ))
-          )}
-          <Button primary type="submit">
-            Save
+          <label>Username:</label>
+          <Input
+            type="text"
+            name="username"
+            value={formData.username || ""}
+            onChange={handleChange}
+          />
+
+          <label>Email:</label>
+          <Input
+            type="email"
+            name="email"
+            value={formData.email || ""}
+            onChange={handleChange}
+          />
+
+          <label>Phone:</label>
+          <Input
+            type="text"
+            name="phone"
+            value={formData.phone || ""}
+            onChange={handleChange}
+          />
+
+          <label>Date of Birth:</label>
+          <Input
+            type="date"
+            name="dob"
+            value={formData.dob || ""}
+            onChange={handleChange}
+          />
+
+          <Button primary type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Save Changes"}
           </Button>
           <Button type="button" onClick={closeModal}>
             Cancel
@@ -178,24 +124,12 @@ const ProfileEditModal = ({
   );
 };
 
-// ✅ Add PropTypes
+// ✅ Prop Types
 ProfileEditModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  section: PropTypes.string.isRequired,
-  tempData: PropTypes.oneOfType([
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        read: PropTypes.bool,
-        write: PropTypes.bool,
-        speak: PropTypes.bool,
-      })
-    ),
-    PropTypes.object,
-  ]).isRequired,
-  setTempData: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  userData: PropTypes.object.isRequired,
+  setUserData: PropTypes.func.isRequired,
 };
 
 export default ProfileEditModal;

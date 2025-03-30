@@ -1,16 +1,22 @@
 .dashboard-container {
   max-width: 800px;
-  margin: 100px auto;
+  width: 90%;
+  margin: auto;
   padding: 20px;
   text-align: center;
-  background: rgb(255, 247, 177);
+  background: rgba(5, 23, 36, 0.85);
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   font-family: Arial, sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
+
 .dashboard-title {
-  color: rgb(158, 143, 0);
+  color:#00ffff; ;
   font-size: 2rem;
   margin-bottom: 20px;
 }
@@ -29,7 +35,7 @@
 }
 
 .feature-card {
-  background: #fff;
+  background: #64b5f6;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
