@@ -1,20 +1,19 @@
 import { Navigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import { useAuth } from "../layouts/authcontext";
 
-const ProtectedRoute = ({ element }) => {
+// eslint-disable-next-line react/prop-types
+const ProtectedRoute = ({ children }) => {
   const { state } = useAuth();
 
-  // ✅ Handle authentication check
-  if (!state || !state.isAuthenticated) {
+  console.log("ProtectedRoute - Auth State:", state); // Debugging
+
+  if (!state.isAuthenticated) {
+    console.log("User not authenticated - Redirecting to Sign In");
     return <Navigate to="/signin" />;
   }
 
-  return element;
-};
-
-ProtectedRoute.propTypes = {
-  element: PropTypes.element.isRequired,
+  console.log("User authenticated - Rendering children");
+  return children; // ✅ Render children if authenticated
 };
 
 export default ProtectedRoute;

@@ -41,11 +41,10 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // ✅ Send POST request to backend using Axios
+      // Send POST request to backend using Axios
       const response = await axios.post(
-        "https://knowtify-server-2.onrender.com/users", // ✅ Ensure the endpoint is correct
-        formData,
-        { headers: { "Content-Type": "application/json" } }
+        "http://localhost:8080/api/users/register", //  Ensure the endpoint is correct
+        formData
       );
       console.log("Registration Successful:", response.data);
       alert("Registration Successful!");
