@@ -7,6 +7,7 @@ import Home from "./components/layouts/Home";
 import Profile from "./components/layouts/Profile";
 import { AuthProvider } from "./components/layouts/authcontext";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
+import EditProfile from "./components/layouts/EditProfile";
 import "./components/styles/header.css";
 import "./components/styles/footer.css";
 import "./components/styles/home.css";
@@ -19,30 +20,30 @@ const App = () => {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* ✅ Public Routes with Layout */}
+          {/* ✅ Public Routes */}
           <Route path="/" element={<Layout><Home /></Layout>} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
 
-          {/* ✅ Protected Routes with Layout */}
-          <Route element={<ProtectedRoute />}>
-          <Route
-            path="/dashboard"
+          {/* ✅ Protected Routes (Wrapped Inside ProtectedRoute) */}
+          <Route 
+            path="/dashboard" 
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            }
+            } 
           />
-          <Route
-            path="/profile"
+          <Route 
+            path="/profile" 
             element={
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
-            }
+            } 
           />
-          </Route>
+          <Route path="/edit-profile" element={<EditProfile />} /> {/* ✅ New route */}
+          
         </Routes>
       </Router>
     </AuthProvider>
