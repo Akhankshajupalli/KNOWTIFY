@@ -45,13 +45,7 @@ const Dashboard = () => {
       <h1 className="dashboard-title">
         Welcome to your KnowTify Dashboard, {userDetails.username}!
       </h1>
-      <p className="dashboard-subtitle">Explore the features available for you:</p>
-      <ul className="dashboard-features">
-        <li className="feature-card">Edit Profile</li>
-        
-        <li className="feature-card">View Activity</li>
-        <li className="feature-card">Change Password</li>
-      </ul>
+      
     </div>
   );
 };

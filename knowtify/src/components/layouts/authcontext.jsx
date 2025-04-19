@@ -1,10 +1,4 @@
-import  {
-  createContext,
-  useContext,
-  useReducer,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useReducer, useEffect, useState } from "react";
 import authReducer from "../reducers/authReducer";
 import axios from "axios";
 
@@ -21,48 +15,73 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/users/check-auth",
-          {
-            withCredentials: true, // Include cookies in request
-          }
-        );
+        const response = await axios.get("http://localhost:8080/api/users/check-auth", {
+          withCredentials: true,
+        });
 
-        console.log("auth context");
-
-        if (response.data.user) {
-          dispatch({ type: "LOGIN", payload: response.data.username });
+        if (response.data) {
+          dispatch({ type: "LOGIN", payload: response.data }); // ✅ Store full user object
         }
       } catch (error) {
         console.error("Auth check failed:", error);
       } finally {
-        setLoading(false); // Update loading state after fetching
+        setLoading(false);
       }
     };
 
     checkAuth();
-  }, []); // Run only once when component mounts
+  }, []);
 
-  const login = (username) => {
-    dispatch({ type: "LOGIN", payload: username });
+  // ✅ Login Function
+  const login = async (username, password) => {
+    try {
+      const response = await axios.post("http://localhost:8080/api/users/login", {
+        username,
+        password,
+      }, { withCredentials: true });
+
+      if (response.data) {
+        dispatch({ type: "LOGIN", payload: response.data });
+        localStorage.setItem("user", JSON.stringify(response.data)); // ✅ Store updated user
+        return true;
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   };
 
-  const updateProfile = (updates) => {
-    dispatch({ type: "UPDATE", payload: updates });
+  // ✅ Update Profile Function
+  const updateProfile = async (updates) => {
+    try {
+      const response = await axios.put(`http://localhost:8080/api/users/${state.user.id}`, updates, {
+        withCredentials: true,
+      });
+
+      if (response.data) {
+        dispatch({ type: "LOGIN", payload: response.data }); // ✅ Update state with new user data
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error("Profile update failed:", error);
+    }
   };
 
+  // ✅ Logout Function
   const logout = async () => {
-    await fetch("http://localhost:8080/api/users/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    dispatch({ type: "LOGOUT" });
+    try {
+      await axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true });
+      dispatch({ type: "LOGOUT" });
+      localStorage.removeItem("user"); // ✅ Clear local storage
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
-    <AuthContext.Provider
-      value={{ state, login, logout, updateProfile, loading }}
-    >
+    <AuthContext.Provider value={{ state, login, logout, updateProfile, loading }}>
       {children}
     </AuthContext.Provider>
   );
